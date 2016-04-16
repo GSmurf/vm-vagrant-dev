@@ -1,0 +1,283 @@
+---
+# +++++++++++++++++++++++++++++++++++++++++++++++ #
+#       Vagrant VM Configuration                  #
+# +++++++++++++++++++++++++++++++++++++++++++++++ #
+
+###################
+# User/Profile info
+###################
+PROFILE:
+  ## git informations
+  email:    'guillaume.camus@gmail.com'
+  realname: 'Guillaume CAMUS'
+
+  ## default shell
+  shell:    '/bin/zsh'
+
+  ## zsh shell layout [grml,prezto,ohmyzsh]
+  zshShell: 'grml'
+
+  ## Github username, eg. for automatic ssh pub-key fetching
+  githubUser: 'guiyomh'
+
+###################
+# VM (vagrant) settings
+###################
+VM:
+  # Name of VM
+  name: 'DEV-VM'
+
+  # Enable GUI mode (show screen of VM)
+  gui: false
+
+  # ---------------------------------------------
+  # Resource settings
+  #
+  # cpu:
+  #   auto -> max number of CPU cores
+  #      2 -> 2 CPU cores
+  #
+  # memory:
+  #   auto -> 1/4 of system RAM
+  #   1500 -> 1.5 GB RAM
+  #
+  cpu:    'auto'
+  memory: 'auto'
+
+  # ---------------------------------------------
+  # Data image (additonal partition) settings
+  #
+  data:
+    # Image size in GB
+    size: 160
+
+    # Filesystem of image
+    # -> ext4, btrfs or xfs
+    filesystem: 'ext4'
+
+  # ---------------------------------------------
+  # Network settings
+  #
+  network:
+    # Private/Host-only network
+    private:
+      address: 192.168.56.2
+
+    # Public bridged network
+    #  |WARNING| This can be a big security issue and an attacker could
+    #  |WARNING| gain access also to host (because of shares or services)!
+    #  |WARNING| Only use if you're sure about the risks!
+    #  |WARNING| If you need access to services use the port forwarding features!
+    bridged:
+      # Address
+      #  false -> disabled
+      #  auto  -> auto configuration (dhcp)
+      address: 'false'
+      bridge: 'en0'
+
+  # ---------------------------------------------
+  # Shared folders
+  #
+  sharedFolder:
+    - { type: 'home' } # only on linux
+    #- { type: 'nfs', src: '~/Projects', target: '/var/www' }
+
+  # ---------------------------------------------
+  # Port forwarding
+  #
+  portForwarding:
+    #- { guest: 80, host: 80, hostIp: '0.0.0.0', protocol: 'tcp' }
+    #- { guest: 80, host: 8000, hostIp: '0.0.0.0', protocol: 'tcp' }
+    #- { guest: 13306, host: 3306, hostIp: '0.0.0.0', protocol: 'tcp' }
+
+  # ---------------------------------------------
+  # Workarounds
+  #
+  workaround:
+    # Fallback ssh connection (https://github.com/mitchellh/vagrant/issues/5186)
+    # -> Authentication issues? Workaround:
+    useSshPasswordAuth: false
+
+  # ---------------------------------------------
+  # VirtualBox settings
+  #
+  virtualbox:
+    # Disk image controller, may change between images, eg.
+    # You sometimes have to switch controller if the image is using another one.
+    # See VM settings in VirtualBox for the correct naming.
+    #
+    #  -> 'IDE Controller'  (eg. webdevops prebuilt 0.2)
+    #  -> 'SATA Controller'
+    diskController: 'IDE Controller'
+
+###################
+# Provisioning features
+###################
+PROVISION:
+  update:      0      # do full system update for each full provisoning (currently not stable for vmware!)
+  packages:    'minimal' # full or minimal
+  samba:       1      # Samba server
+  ntp:         1      # Time synchronization
+  mail:        1      # Mail sandbox
+  php:         1      # Local PHP
+  docker:      1      # Docker server
+  dockerProxy: 1      # Docker reverse proxy for containers (apache)
+  clitools:    1      # CliTools
+
+  ## Development domain (automatic redirect of *.vm for internal use)
+  developmentDomain: 'vm'
+
+###################
+# GIT
+###################
+GIT:
+  workspace: /root
+  # If set to TRUE, git will be installed from source, using the version set with
+  # the 'git_version' variable instead of using a package.
+  install_from_source: true
+  install_path: "/usr"
+  version: "2.8.1"
+  # If git_install_from_source is set to false, these two variables define whether
+  # to use an additional repo for the package installation, and which git packages
+  # will be installed.
+  enablerepo: ""
+  packages:
+    - git
+    - git-svn
+  # If git is already installed at and older version, force a new source build.
+  # Only applies if install_from_source is `true`.
+  install_from_source_force_update: true
+
+# Leave this at it's default.(false)
+git_reinstall_from_source: false
+
+###################
+# Docker features
+###################
+DOCKER:
+  ## Additional docker opts
+  ##  -> if you use btrfs you can set: -s btrfs
+  opts: ''
+
+  # Cleanup tasks on provisioning
+  cleanup:
+    # Clean orphaned images
+    images: 1
+
+    # Cleanu ophaned volumes
+    volumes: 1
+
+    # Cleanup /var/lib/docker/tmp/
+    tmp: 1
+
+  ## Automatic docker image loading/updating
+  images:
+    # Official images
+    - ubuntu:12.04
+    - ubuntu:14.04
+    - ubuntu:15.04
+    - centos:7
+    # WebDevOps images
+    # - webdevops/php-boilerplate:ubuntu-12.04
+    # - webdevops/php-boilerplate:ubuntu-14.04
+    # - webdevops/php-boilerplate:ubuntu-15.04
+    # - webdevops/php-boilerplate:centos-7
+    # Apache
+    - httpd:2.2
+    - httpd:2.4
+    # Nginx
+    - nginx
+    # MySQL
+    # - mariadb:5.5
+    # - mariadb:10
+    # - mysql:5.5
+    # - mysql:5.6
+    # - mysql:5.7
+    # - percona:5.5
+    # - percona:5.6
+    # Postgres
+    # - postgres:9.4
+    # Memcached
+    # - memcached
+    # Redis
+    # - redis
+
+###################
+# Packages
+###################
+PACKAGES:
+
+  # Custom GNU/Linux kernel version (need reboot after provisioning)
+  #
+  # Examples:
+  #   default kernel   -> 0 or ''
+  #   specific version -> 3.19.0-25-generic
+  #   recent kernel    -> recent
+  #
+  # -- WARNING: use with caution - maybe not stable --
+  kernel:        ''
+
+###################
+# Reverse Proxy
+###################
+
+DOCKERPROXY:
+  vhosts:
+    # Docker vhosts
+    # eg.        8000.vm.dev
+    #        foo.8000.vm.dev
+    #            8005.vm.dev
+    #    bar.foo.8005.vm.dev
+    #                8000.vm
+    #            foo.8000.vm
+    #                8005.vm
+    #        bar.foo.8005.vm
+    - { type: 'docker', domain: '8000', HTTP: 8000, HTTPS: 8443 }
+    - { type: 'docker', domain: '8001', HTTP: 8001, HTTPS: 8444 }
+    - { type: 'docker', domain: '8002', HTTP: 8002, HTTPS: 8445 }
+    - { type: 'docker', domain: '8003', HTTP: 8003, HTTPS: 8446 }
+    - { type: 'docker', domain: '8004', HTTP: 8004, HTTPS: 8447 }
+    - { type: 'docker', domain: '8005', HTTP: 8005, HTTPS: 8448 }
+    # solr.vm
+    - { type: 'solr',   domain: 'solr', HTTP: 18983 }
+    # elasticsearch.vm
+    - { type: 'docker', domain: 'elasticsearch', HTTP: 19200 }
+    # vagrant share proxy
+    - { type: 'vagrantshare', HTTP: 8000, HTTPS: 8443 }
+    # docker fallback (default *.vm redirect)
+    - { type: 'dockerfallback', HTTP: 8000, HTTPS: 8443 }
+
+###################
+# Clitools settings
+###################
+CLITOOLS:
+  ## Password for growl server
+  growlPassword: ''
+  db:
+    dsn:      'mysql:host=127.0.0.1;port=13306'
+    username: 'root'
+    password: 'dev'
+  docker:
+    boilerplate: 'https://github.com/mblaschke/php-docker-boilerplate.git'
+
+###################
+# Firewall settings
+###################
+FIREWALL:
+
+  # Network bridge firewall
+  bridge:
+
+    # Interface of bridge
+    interface: eth2
+
+    # List of allowed ports
+    ports:
+      # list of ports
+      # required fields: port, protocol
+      # optional fields: source
+      #- { port: 22, protocol: tcp, source: '10.0.0.0/8' } # SSH
+      - { port: 80, protocol: tcp }  # HTTP
+      - { port: 443, protocol: tcp } # HTTPS
+      #- { port: 143, protocol: tcp } # IMAP
+

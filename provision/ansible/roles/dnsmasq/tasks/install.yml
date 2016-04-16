@@ -1,0 +1,15 @@
+- name: Install dnsmasq [Debian]
+  apt:
+    pkg:   '{{ item }}'
+    state: present
+  with_items:
+    - dnsmasq
+  when: ansible_os_family == 'Debian'
+
+- name: Install dnsmasq [Debian]
+  yum:
+    name:   '{{ item }}'
+    state: present
+  with_items:
+    - dnsmasq
+  when: ansible_os_family == 'RedHat'

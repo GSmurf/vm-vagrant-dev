@@ -1,0 +1,12 @@
+- name: Cleanup apt [Debian]
+  command: apt-get clean -y
+  when: ansible_os_family == 'Debian'
+
+- name: Cleanup apt [Debian]
+  command: apt-get autoclean -y
+  when: ansible_os_family == 'Debian'
+
+- name: Cleanup yum [RedHat]
+  command: yum clean all
+  when: ansible_os_family == 'RedHat'
+

@@ -1,0 +1,19 @@
+- name: Remove old ntp packages
+  apt:
+    pkg:   '{{ item }}'
+    state: absent
+    purge: yes
+  with_items:
+    - ntp
+    - openntpd
+
+## WORKAROUND: restart apparmor because of openntpd (if apparmor is available)
+- command: "service apparmor restart"
+  ignore_errors: yes
+
+- name: Install chrony
+  apt:
+    pkg:   '{{ item }}'
+    state: present
+  with_items:
+    - chrony

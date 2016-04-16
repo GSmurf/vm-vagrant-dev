@@ -1,0 +1,174 @@
+- name: Set Docker config file [Debian]
+  set_fact:
+    docker_conf_file: /etc/default/docker
+  when: ansible_os_family == 'Debian'
+
+- name: Set Docker config file [RedHat]
+  set_fact:
+    docker_conf_file: /etc/sysconfig/docker
+  when: ansible_os_family == 'RedHat'
+
+- name: Configure Docker Service (1/2) [RedHat]
+  lineinfile:
+    dest: '/usr/lib/systemd/system/docker.service'
+    insertbefore: '^ExecStart'
+    regexp: '^#?EnvironmentFile\='
+    line: 'EnvironmentFile=-/etc/sysconfig/docker'
+  when: ansible_os_family == 'RedHat'
+
+- name: Configure Docker Service (2/2) [RedHat]
+  lineinfile:
+    dest: '/usr/lib/systemd/system/docker.service'
+    regexp: '^#?ExecStart\='
+    line: 'ExecStart=/usr/bin/docker -d -H tcp://127.0.0.1:4243 -H fd:// $DOCKER_OPTS'
+  when: ansible_os_family == 'RedHat'
+
+- name: Create Docker config file
+  file: path={{ docker_conf_file }} state=touch mode=0755
+
+- name: Configure docker
+  lineinfile:
+    dest: '{{ docker_conf_file }}'
+    regexp: '^#?DOCKER_OPTS\='
+    line: 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock {{ DOCKER.opts }}"'
+    state: present
+  notify:
+    - Restart Docker
+  
+- name: Configure docker [RedHat]
+  lineinfile:
+    dest: '/etc/default/docker'
+    regexp: '^#?DOCKER_OPTS\='
+    line: 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock {{ DOCKER.opts }}"'
+    state: present
+  notify:
+    - Restart Docker
+  when: ansible_os_family == 'Debian'
+
+- name: Create /opt/docker/bin/ directory
+  file:
+    dest:  /opt/docker/bin/
+    owner: vagrant
+    group: vagrant
+    mode:  0777
+    state: directory
+
+- name: Deploy docker bin files
+  synchronize:
+    rsync_path: "sudo rsync"
+    src: roles/docker/files/bin/
+    dest: /opt/docker/bin/
+    delete: no
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: latest
+
+- name: Fix rights
+  file:
+    path: '{{ item.path }}'
+    state: '{{ item.state }}'
+    owner: vagrant
+    group: vagrant
+    mode: '{{ item.mode }}'
+  with_items:
+   - { path: '/opt/docker/bin/compose-wrapper.sh', state : 'file', mode: '0777' }
+
+- name: Add symlinks
+  file:
+    src:  '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    state: 'link'
+    owner: vagrant
+    group: vagrant
+    mode: '0777'
+    force: yes
+  with_items:
+   - { src: '/opt/docker/bin/compose-wrapper.sh',   dest: '/usr/local/bin/dcc' }
+
+#############################
+# Apparmor profile
+#############################
+
+- name: Fix AppArmor profile
+  lineinfile:
+    dest:        '/etc/apparmor.d/docker'
+    insertafter: '[\s]*capability'
+    line:        '  ptrace peer=docker-default,'
+    state:       present
+  notify:
+    - Reload AppArmor
+
+
+- stat: path=/etc/profile.d/docker.sh
+  register: st_dockeralias
+  no_log: True
+
+- name: Création des alias Docker
+  copy:
+    content: |
+      # Get latest container ID
+      alias dl="docker ps -l -q"
+
+      # Get container process
+      alias dps="docker ps"
+
+      # Get process included stop container
+      alias dpa="docker ps -a"
+
+      # Get images
+      alias di="docker images"
+
+      # Get container IP
+      alias dip="docker inspect --format '{{ "{{ .NetworkSettings.IPAddress }}"  }}'"
+
+      # Run deamonized container, e.g., $dkd base /bin/echo hello
+      alias dkd="docker run -d -P"
+
+      # Run interactive container, e.g., $dki base /bin/bash
+      alias dki="docker run -i -t -P"
+
+      # Execute interactive container, e.g., $dex base /bin/bash
+      alias dex="docker exec -i -t"
+
+      # Show stats with the names of the containers
+      dstats() { docker stats $(docker ps --format={{.Names}}); }
+
+      # Stop all containers
+      dstop() { docker stop $(docker ps -a -q); }
+
+      # Remove all containers
+      drm() { docker rm $(docker ps -a -q); }
+
+      # Stop and Remove all containers
+      alias drmf='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+
+      # Remove all images
+      dri() { docker rmi $(docker images -q); }
+
+      # Dockerfile build, e.g., $dbu tcnksm/test
+      dbu() { docker build -rm -t=$1 .; }
+
+      # Show all alias related docker
+      dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
+
+      # sass
+      alias sass="docker run -it --rm -v \$(pwd):\$(pwd) -w \$(pwd) jbergknoff/sass"
+
+      # node
+      alias node="docker run -it --rm -v \$PWD:/usr/src/app -w /usr/src/app node:latest node"
+      alias npm="docker run -it --rm -v \$PWD:/usr/src/app -w /usr/src/app node:latest npm"
+
+      # apache
+      alias apache-test-config="docker exec -ti apache apachectl -t"
+      alias apache-graceful="docker exec -ti apache pkill -f httpd"
+
+      # php
+      alias php="docker run -it --rm -v $PWD:/usr/src/app -w /usr/src/app infogene/php:centos-7-php56 php"
+      alias composer="docker run -it --rm -v $PWD:/usr/src/app -w /usr/src/app infogene/php:centos-7-php56 php composer"
+    dest: "/etc/profile.d/docker.sh"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  when: st_dockeralias.stat.exists == False

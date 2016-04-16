@@ -1,0 +1,55 @@
+- name: Setup automatic startup maintenance (clitools)
+  lineinfile:
+    destfile: /etc/rc.local
+    insertbefore: '^exit 0'
+    line:  '/usr/local/bin/ct system:startup > /dev/null'
+    state: present
+
+- name: Deploy local configuration
+  template:
+    src:   roles/clitools/templates/clitools.ini.j2
+    dest:  /etc/clitools.ini
+    owner: vagrant
+    group: root
+    mode:  0644
+
+- name: Copy cron configuration
+  copy:
+    src:   roles/clitools/files/crontab
+    dest:  /etc/cron.d/clitools
+    owner: root
+    group: root
+    mode:  0644
+
+- name: Create /tmp/debug/ directory
+  file:
+    dest:  '{{ item }}'
+    owner: root
+    group: root
+    mode:  0777
+    state: directory
+  with_items:
+    - /etc/bash_completion.d/
+    - /etc/zsh_completion.d/
+
+- name: Copy bash.completition
+  copy:
+    src:   roles/clitools/files/bash.clitools.completition
+    dest:  /etc/bash_completion.d/clitools
+    owner: root
+    group: root
+    mode:  0644
+
+- name: Copy zsh.completition
+  copy:
+    src:   roles/clitools/files/zsh.clitools.completition
+    dest:  /etc/zsh_completion.d/clitools
+    owner: root
+    group: root
+    mode:  0644
+
+- name: Run clitools system startup
+  raw: '/usr/local/bin/ct system:startup > /dev/null'
+  ignore_errors: True
+  notify:
+    - Run clitools system startup

@@ -1,0 +1,59 @@
+;++++++++++++++++++++++++++++++++++++++
+; CliTools configuration
+;++++++++++++++++++++++++++++++++++++++
+; Defaults:
+;  https://github.com/mblaschke/clitools/blob/develop/src/config.ini
+;
+;++++++++++++++++++++++++++++++++++++++
+
+[config]
+ssh_conf_path   = "/vagrant/provision/sshconfig/"
+domain_dev      = "{{ PROVISION.developmentDomain }}"
+
+[db]
+dsn = "{{ CLITOOLS.db.dsn }}"
+username = "{{ CLITOOLS.db.username }}"
+password = "{{ CLITOOLS.db.password }}"
+debug_log_dir = "/tmp/debug/"
+
+[syscheck]
+enabled = 1
+{% if CLITOOLS.growlPassword %}
+wall = 0
+growl = 1
+{% else %}
+wall = 1
+growl = 0
+{% endif %}
+diskusage = 90
+
+[growl]
+server = 192.168.56.1
+password = "{{ CLITOOLS.growlPassword }}"
+
+[docker]
+interface   = docker0
+boilerplate = "{{ CLITOOLS.docker.boilerplate }}"
+
+climethod = docker-exec
+; climethod = dockercompose-run
+
+[dockerBoilerplate]
+default = "{{ CLITOOLS.docker.boilerplate }}"
+typo3   = https://github.com/webdevops/TYPO3-docker-boilerplate.git
+
+[banner]
+mailbox = imap-insecure://vagrant:vagrant@127.0.0.1/INBOX
+
+[commands]
+; not used commands here
+ignore[] = "CliTools\Console\Command\Log\ApacheCommand"
+ignore[] = "CliTools\Console\Command\Log\PhpCommand"
+ignore[] = "CliTools\Console\Command\Log\DebugCommand"
+ignore[] = "CliTools\Console\Command\Apache\RestartCommand"
+ignore[] = "CliTools\Console\Command\Mysql\RestartCommand"
+ignore[] = "CliTools\Console\Command\Php\RestartCommand"
+ignore[] = "CliTools\Console\Command\Samba\RestartCommand"
+ignore[] = "CliTools\Console\Command\System\UpdateCommand"
+ignore[] = "CliTools\Console\Command\System\RebootCommand"
+ignore[] = "CliTools\Console\Command\Vagrant\*Command"

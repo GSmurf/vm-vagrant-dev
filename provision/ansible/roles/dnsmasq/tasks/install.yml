@@ -6,7 +6,7 @@
     - dnsmasq
   when: ansible_os_family == 'Debian'
 
-- name: Install dnsmasq [Debian]
+- name: Install dnsmasq [RedHat]
   yum:
     name:   '{{ item }}'
     state: present

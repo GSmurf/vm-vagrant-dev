@@ -16,28 +16,27 @@ export ANSIBLE_CONFIG="${SCRIPT_DIR}/ansible/ansible.cfg"
 ########################
 
 # install ansible if needed
-if [ -z "`which ansible-playbook`" ]; then
+if [ -z $(command -v ansible-playbook) ]; then
     echo " ***************************************************************************** "
     echo " *** Starting installation of ansible "
     echo " ***************************************************************************** "
-    if [ -z "`which yum`"]; then
+    if [ -n $(command -v yum) ]; then
+    	echo " *** DEBUG : yum *** "
+        yum -y install epel-release
         yum -y install python-devel \
-            epel-release \
-            python-setuptools \
-            python-setuptools-devel \
-            ansible \
-            git \
-        easy_install pip
-        pip install paramiko PyYAML Jinja2 httplib2 six
-    fi
-    if [ -z "`which apt-get`"]; then
+            python-pip \
+            python-yaml \
+            git
+    elif [ -z $(command -v apt-get) ]; then
+    	echo " *** DEBUG : apt *** "
         apt-get update
-        apt-get -q -y --force-yes  install software-properties-common
-        apt-add-repository ppa:ansible/ansible
-        apt-get -q -y --force-yes update
-        apt-get -q -y --force-yes install ansible  python-pycurl python-mysqldb python-passlib
+        apt-get -q -y --force-yes install software-properties-common \
+			python-yaml \
+			python-pip \
+			git
     fi
-    
+
+ 	pip install ansible
 fi
 
 ########################

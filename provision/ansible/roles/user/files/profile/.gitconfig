@@ -9,9 +9,7 @@
 [advice]
     pushNonFastForward = false
 [alias]
-
-
-st = status
+    st = status
     ci = commit
     cia = commit --amend
     
@@ -125,3 +123,5 @@ st = status
     proxy =
 [push]
     default = current
+[credential]
+    helper = cache --timeout=25200

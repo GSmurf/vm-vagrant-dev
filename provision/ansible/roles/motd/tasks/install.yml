@@ -1,0 +1,40 @@
+---
+
+- name: Install dependencies [Redhat]
+  yum: name={{ item }} state=present
+  with_items:
+    - figlet
+    - openssh-clients
+    - bc
+    - sysstat
+  when: ansible_os_family == 'RedHat'
+
+- name: Install dependencies [Debian]
+  apt: pkg={{ item }} state=present
+  with_items:
+    - figlet
+    - openssh-clients
+    - bc
+    - sysstat
+  when: ansible_os_family == 'Debian'
+
+- name: Disable Motd
+  lineinfile:
+    destfile: /etc/ssh/sshd_config
+    regexp:   '^#?PrintMotd'
+    line:     'PrintMotd no'
+    state:     present
+  notify:
+    - Restart ssh
+
+- name: Download Motd Generator
+  get_url: url=https://raw.githubusercontent.com/willemdh/generate_motd/master/generate_motd.sh dest=/usr/bin mode=0755
+
+- name: Create updatecount.txt
+  file: path=/tmp/updatecount.txt state=touch mode=0777
+
+- name: Copy script update_motd.sh
+  copy: src=update_motd.sh dest=/usr/bin/update_motd.sh mode=0755 owner=root group=root
+
+- name: Copy script in profile.d
+  copy: src=login_motd.sh dest=/etc/profile.d/login_motd.sh mode=0755 owner=root group=root

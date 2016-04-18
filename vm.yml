@@ -115,7 +115,7 @@ VM:
 ###################
 PROVISION:
   update:      0      # do full system update for each full provisoning (currently not stable for vmware!)
-  packages:    'minimal' # full or minimal
+  packages:    'full' # full or minimal
   samba:       1      # Samba server
   ntp:         1      # Time synchronization
   mail:        1      # Mail sandbox
@@ -173,34 +173,24 @@ DOCKER:
   ## Automatic docker image loading/updating
   images:
     # Official images
-    - ubuntu:12.04
     - ubuntu:14.04
     - ubuntu:15.04
+    - ubuntu:16.04
     - centos:7
-    # WebDevOps images
-    # - webdevops/php-boilerplate:ubuntu-12.04
-    # - webdevops/php-boilerplate:ubuntu-14.04
-    # - webdevops/php-boilerplate:ubuntu-15.04
-    # - webdevops/php-boilerplate:centos-7
     # Apache
     - httpd:2.2
     - httpd:2.4
     # Nginx
     - nginx
     # MySQL
-    # - mariadb:5.5
-    # - mariadb:10
-    # - mysql:5.5
-    # - mysql:5.6
-    # - mysql:5.7
-    # - percona:5.5
-    # - percona:5.6
+    - mariadb:5.5
+    - percona:5.6
     # Postgres
-    # - postgres:9.4
+    - postgres:9.4
     # Memcached
-    # - memcached
+    - memcached
     # Redis
-    # - redis
+    - redis
 
 ###################
 # Packages

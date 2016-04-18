@@ -3,3 +3,8 @@
 
 - name: Reload cron
   command: service cron reload
+  when: ansible_os_family == 'Debian'
+
+- name: Reload cron
+  command: service crond reload
+  when: ansible_os_family == 'RedHat'

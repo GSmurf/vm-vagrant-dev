@@ -5,6 +5,7 @@
   with_items:
     - parted
     - curl
+    - wget
   when: ansible_os_family == 'Debian'
 
 - name: Install default provisioning packages [RedHat]
@@ -14,6 +15,7 @@
   with_items:
     - parted
     - curl
+    - wget
   when: ansible_os_family == 'RedHat'
 
 - name: Install default tool packages [Debian]

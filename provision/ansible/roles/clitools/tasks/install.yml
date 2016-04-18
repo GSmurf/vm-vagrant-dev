@@ -18,11 +18,10 @@
     mode:  0777
     state: file
 
-- name: Install clitools additional packages
+- name: Install clitools additional packages [Debian]
   action: apt pkg='{{ item }}' state=latest
   with_items:
     # Tools
-    - git
     - wget
     - multitail
     - sudo
@@ -35,3 +34,22 @@
     # Debug
     - strace
     - lsof
+  when: ansible_os_family == 'Debian'
+
+- name: Install clitools additional packages [RedHat]
+  action: yum pkg='{{ item }}' state=latest
+  with_items:
+    # Tools
+    - wget
+    - multitail
+    - sudo
+    - moreutils
+    # Network
+    - wireshark
+    - derrick
+    - tcpdump
+    - ngrep
+    # Debug
+    - strace
+    - lsof
+  when: ansible_os_family == 'RedHat'

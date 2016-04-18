@@ -12,11 +12,12 @@
     - docker
     - disk 
     - dnsmasq
+    - motd
   #   - { role: docker-proxy, when: PROVISION.dockerProxy == 1 }
   #   - { role: mail,         when: PROVISION.mail == 1 }
-  #   - { role: ntp,          when: PROVISION.ntp == 1 }
+    - ntp
   #   - { role: firewall       }
-  #   - { role: clitools,     when: PROVISION.clitools == 1 }
+    - clitools
   #   - { role: monit          }
     - user 
     - customization

@@ -1,3 +1,6 @@
+# - name: Display all variables/facts known for a host
+#   debug: var=hostvars[inventory_hostname]
+    
 - name: Deploy dnsmasq configuration (development)
   template:
     src:   roles/dnsmasq/templates/development.j2

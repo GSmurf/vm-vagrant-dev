@@ -31,6 +31,7 @@
     - telnet
     - vim
     - tmux
+    - tree
   when: ansible_os_family == 'Debian'
 
 - name: Install default tool packages [RedHat]
@@ -46,6 +47,7 @@
     - telnet
     - vim
     - tmux
+    - tree
   when: ansible_os_family == 'RedHat'
 
 - name: Install default compression packages [Debian]

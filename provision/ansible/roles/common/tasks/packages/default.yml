@@ -108,3 +108,7 @@
     - incron
     - python-pip
   when: ansible_os_family == 'RedHat'
+
+- name: Update Rsync ['RedHat']
+  yum: name=http://pkgs.repoforge.org/rsync/rsync-3.1.1-1.el7.rfx.x86_64.rpm state=present
+  when: ansible_os_family == 'RedHat'

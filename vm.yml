@@ -8,8 +8,8 @@
 ###################
 PROFILE:
   ## git informations
-  email:    'guillaume.camus@gmail.com'
-  realname: 'Guillaume CAMUS'
+  email:    'user@email.com'
+  realname: 'FirstName LASTNAME'
 
   ## default shell
   shell:    '/bin/zsh'
@@ -18,7 +18,7 @@ PROFILE:
   zshShell: 'grml'
 
   ## Github username, eg. for automatic ssh pub-key fetching
-  githubUser: 'guiyomh'
+  githubUser: ''
 
 ###################
 # VM (vagrant) settings
@@ -174,24 +174,30 @@ DOCKER:
   ## Automatic docker image loading/updating
   images:
     # Official images
-    - ubuntu:14.04
-    - ubuntu:15.04
-    - ubuntu:16.04
+    # - ubuntu:14.04
+    # - ubuntu:15.04
+    # - ubuntu:16.04
     - centos:7
+    # WebDevOps
+    - webdevops/base:centos-7
+    - webdevops/base:debian-7
+    - webdevops/base:debian-8
+    - webdevops/base:ubuntu-14.04
+    - webdevops/base:ubuntu-15.04
     # Apache
-    - httpd:2.2
-    - httpd:2.4
+    # - httpd:2.2
+    # - httpd:2.4
     # Nginx
-    - nginx
+    # - nginx
     # MySQL
-    - mariadb:5.5
-    - percona:5.6
+    # - mariadb:5.5
+    # - percona:5.6
     # Postgres
-    - postgres:9.4
+    # - postgres:9.4
     # Memcached
-    - memcached
+    # - memcached
     # Redis
-    - redis
+    # - redis
 
 ###################
 # Packages

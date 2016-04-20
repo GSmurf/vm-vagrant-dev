@@ -22,7 +22,7 @@
   lineinfile:
     destfile: /etc/ssh/sshd_config
     regexp:   '^#?PrintMotd'
-    line:     'PrintMotd no'
+    line:     'PrintMotd yes'
     state:     present
   notify:
     - Restart ssh
@@ -36,5 +36,11 @@
 - name: Copy script update_motd.sh
   copy: src=update_motd.sh dest=/usr/bin/update_motd.sh mode=0755 owner=root group=root
 
-- name: Copy script in profile.d
-  copy: src=login_motd.sh dest=/etc/profile.d/login_motd.sh mode=0755 owner=root group=root
+- name: Setup Cron at reboot
+  cron: name="Update Motd at reboot" special_time=reboot job="/usr/bin/update_motd.sh > /etc/motd"
+
+- name: Setup Cron at X times
+  cron: name="Update Motd" minute="*/5" job="/usr/bin/update_motd.sh > /etc/motd"
+
+# - name: Copy script in profile.d
+#   copy: src=login_motd.sh dest=/etc/profile.d/login_motd.sh mode=0755 owner=root group=root

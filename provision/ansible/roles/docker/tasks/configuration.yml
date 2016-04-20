@@ -36,16 +36,9 @@
   notify:
     - Restart Docker
   
-- name: Configure docker [RedHat]
-  lineinfile:
-    dest: '/etc/default/docker'
-    regexp: '^#?DOCKER_OPTS\='
-    line: 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock {{ DOCKER.opts }}"'
-    state: present
-  notify:
-    - Restart Docker
-  when: ansible_os_family == 'Debian'
-
+- name: Add vagrant user to docker group
+  user: name=vagrant groups=docker append=yes
+  
 - name: Create /opt/docker/bin/ directory
   file:
     dest:  /opt/docker/bin/

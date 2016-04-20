@@ -6,19 +6,20 @@
     - /vagrant/provision/ansible/default.yml
     - /vagrant/vm.yml
   roles:
-    - common
-    - git
-    - ssh
-    - docker
-    - disk 
-    - dnsmasq
-    - motd
+    - { role: common }
+    - { role: git,        when: PROVISION.git == 1 }
+    - { role: ssh }
+    - { role: docker,     when: PROVISION.docker == 1 }
+    - { role: disk  }
+    - { role: dnsmasq }
+    - { role: motd }
   #   - { role: docker-proxy, when: PROVISION.dockerProxy == 1 }
   #   - { role: mail,         when: PROVISION.mail == 1 }
-    - ntp
+    - { role: ntp }
   #   - { role: firewall       }
-    - clitools
+    - { role: php ,       when: PROVISION.clitools == 1 }
+    - { role: clitools ,  when: PROVISION.clitools == 1 }
   #   - { role: monit          }
-    - user 
-    - customization
-    - finalize
+    - { role: user  }
+    - { role: customization }
+    - { role: finalize }

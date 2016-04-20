@@ -123,6 +123,7 @@ PROVISION:
   docker:      1      # Docker server
   dockerProxy: 1      # Docker reverse proxy for containers (apache)
   clitools:    1      # CliTools
+  git:         1      # Install git from source
 
   ## Development domain (automatic redirect of *.vm for internal use)
   developmentDomain: 'vm'

@@ -340,9 +340,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Maintenance (run always)
-  # config.vm.provision "maintenance", run: "always", type: "shell" do |s|
-  #     s.inline = "sudo bash /vagrant/provision/maintenance.sh"
-  # end
+  config.vm.provision "maintenance", run: "always", type: "shell" do |s|
+      s.inline = "sudo bash /vagrant/provision/maintenance.sh"
+  end
 
   #################
   # Customization

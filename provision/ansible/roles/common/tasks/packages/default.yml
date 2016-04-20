@@ -31,6 +31,7 @@
     - telnet
     - vim
     - tmux
+    - tree
   when: ansible_os_family == 'Debian'
 
 - name: Install default tool packages [RedHat]
@@ -46,6 +47,7 @@
     - telnet
     - vim
     - tmux
+    - tree
   when: ansible_os_family == 'RedHat'
 
 - name: Install default compression packages [Debian]
@@ -107,4 +109,11 @@
   with_items:
     - incron
     - python-pip
+  when: ansible_os_family == 'RedHat'
+
+- name: Start service incron
+  service: name=incrond state=started enabled=yes
+
+- name: Update Rsync ['RedHat']
+  yum: name=http://pkgs.repoforge.org/rsync/rsync-3.1.1-1.el7.rfx.x86_64.rpm state=present
   when: ansible_os_family == 'RedHat'

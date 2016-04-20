@@ -2,6 +2,7 @@
   include: install.yml
   tags:
     - bootstrap
+    - php
 
 - name: Configure php
   include: configuration.yml

@@ -33,7 +33,6 @@
     - php-pecl-memcache
     - php-mcrypt
     - php-gd
-    - php-sqlite
     - php-xmlrpc
     - php-pecl-geoip
     - php-ldap

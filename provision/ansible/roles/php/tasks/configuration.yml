@@ -1,12 +1,12 @@
 - name: Set path php config [Debian]
   set_fact:
-    php_conf_src: /etc/php5/
+    php_conf_src: roles/php/files/
     php_config_path: /etc/php5/
   when: ansible_os_family == 'Debian'
 
 - name: Set path php config [RedHat]
   set_fact:
-    php_conf_src: /etc/php5/mods-available
+    php_conf_src: roles/php/files/mods-available
     php_config_path: /etc/php.d/
   when: ansible_os_family == 'RedHat'
 
@@ -25,3 +25,12 @@
    - local-prod
    - local-dev
   when: ansible_os_family == 'Debian'
+
+- name: Configure php.ini
+  lineinfile:
+    dest:   '/etc/php.ini'
+    regexp: '^[\s;]*{{ item.key }}[\s]*='
+    line:   '{{ item.key }} = {{ item.value }}'
+  with_items:
+   - { key: 'date.timezone',  value: "Europe/Paris" }
+

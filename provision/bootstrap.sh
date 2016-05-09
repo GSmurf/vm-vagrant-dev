@@ -24,6 +24,8 @@ if [ -z $(command -v ansible-playbook) ]; then
     	echo " *** DEBUG : yum *** "
         yum -y install epel-release
         yum -y install python-devel \
+        	libffi-devel \
+        	openssl-devel \
             python-pip \
             python-yaml \
             git
@@ -36,6 +38,9 @@ if [ -z $(command -v ansible-playbook) ]; then
 			git
     fi
 
+    echo " *** Starting installing Ansible "
+    pip install --upgrade pip
+    pip install --upgrade setuptools
  	pip install ansible
 fi
 

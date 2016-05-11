@@ -1,3 +1,6 @@
+- name: Check file incron.allow exist
+  file: path=/etc/incron.allow state=touch mode=0644
+
 - name: Enable incron usage for vagrant
   lineinfile:
     dest:   /etc/incron.allow

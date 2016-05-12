@@ -6,6 +6,8 @@
     dest:   /etc/incron.allow
     regexp: 'vagrant'
     line:   'vagrant'
+  notify:
+    - Restart incron
 
 # name: Load incrontab
 - raw: echo "" > /tmp/user.incrontab

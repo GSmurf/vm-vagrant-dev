@@ -102,6 +102,9 @@
     - python-pip
   when: ansible_os_family == 'Debian'
 
+- name: Start service incron
+  service: name=incrond state=started enabled=yes
+
 - name: Install default other packages [RedHat]
   yum:
     name:   '{{ item }}'

@@ -7,7 +7,7 @@
     - /vagrant/vm.yml
   roles:
     - { role: common    }
-    # - { role: git,        when: PROVISION.git == 1 }
+    - { role: git,        when: PROVISION.git == 1 }
     - { role: ssh       }
     - { role: docker,     when: PROVISION.docker == 1 }
     - { role: disk      }

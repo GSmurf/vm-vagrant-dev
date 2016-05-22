@@ -28,7 +28,7 @@
     - Restart ssh
 
 - name: Download Motd Generator
-  get_url: url=https://raw.githubusercontent.com/willemdh/generate_motd/master/generate_motd.sh dest=/usr/bin mode=0755
+  copy: src=FireMotD.sh dest=/usr/bin/FireMotD.sh mode=0755 owner=root group=root
 
 - name: Create updatecount.txt
   file: path=/tmp/updatecount.txt state=touch mode=0777
@@ -41,6 +41,3 @@
 
 - name: Setup Cron at X times
   cron: name="Update Motd" minute="*/5" job="/usr/bin/update_motd.sh > /etc/motd"
-
-# - name: Copy script in profile.d
-#   copy: src=login_motd.sh dest=/etc/profile.d/login_motd.sh mode=0755 owner=root group=root

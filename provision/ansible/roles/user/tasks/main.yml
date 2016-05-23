@@ -49,4 +49,3 @@
   include: rupa-z.yml
   tags:
     - bootstrap
-

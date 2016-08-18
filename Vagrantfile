@@ -126,10 +126,8 @@ DiskVmData = File.join(VAGRANT_ROOT, '/disks/vm-data.vdi')
 ###############################################################################
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "centos/7"
+  config.vm.box = "guiyomh/centos-7"
   config.vm.box_check_update = true
-
-  config.vbguest.installer_arguments = ['--nox11']
 
   #################
   # Provider: Parallels

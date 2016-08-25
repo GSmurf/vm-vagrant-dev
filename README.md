@@ -25,7 +25,7 @@ Hint: Vagrant doesn't provides GUI tools, it's just a CLI tool.
 ## Installation
 
 ```
-git clone https://github.com/guiyomh/vm-vagrant-dev.git dev-vm
+git clone --recursive --config core.autocrlf=false https://github.com/guiyomh/vm-vagrant-dev.git devvm
 cd dev-vm
 vim vm.yml
 vagrant up
